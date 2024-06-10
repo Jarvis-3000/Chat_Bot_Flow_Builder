@@ -25,20 +25,26 @@ const nodeTypes = { custom: Node };
 const alertTimeoutDuration = 5000;
 
 function FlowBuilder() {
-  const [isUpdating, setIsUpdating] = useState(false);
   const [selectedNode, setSelectedNode] = useState();
   const [alertMessage, setAlertMessage] = useState();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
+  let timeout = useRef();
   const reactFlowWrapper = useRef(null);
 
   const showAlert = ({ message, type }) => {
     setAlertMessage({ message, type });
 
+    // if timeout is already running then clear the prev timeout
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+
+    // set new time out
     // Auto go away
-    setTimeout(() => {
+    timeout.current = setTimeout(() => {
       setAlertMessage(null);
     }, alertTimeoutDuration);
   };
@@ -133,15 +139,14 @@ function FlowBuilder() {
 
   // Start update node process when node gets clicked
   const handleNodeClick = (event, node) => {
-    setIsUpdating(true);
     setSelectedNode(node);
   };
 
   const handleBackClick = () => {
-    setIsUpdating(false);
     setSelectedNode(null);
   };
 
+  // Debounced function to reduce number of re-renders
   const handleUpdateNode = (newLabel) => {
     const selectedNodeId = selectedNode.id;
 
@@ -164,10 +169,9 @@ function FlowBuilder() {
   };
 
   const isConnectionValid = () => {
-    // Note: 
+    // Note:
     // A valid connection has no more than 1 empty target
     // All the nodes have to be connected
-
 
     // get source and target nodes
     const sourceNodes = new Set();
@@ -193,7 +197,7 @@ function FlowBuilder() {
       (node) => !sourceNodes.has(node.id) && !targetNodes.has(node.id)
     );
 
-    if (isFlowDisnnected) {
+    if (nodes.length > 1 && isFlowDisnnected) {
       showAlert({
         message: "Invalid Connection! Flow is disconnected.",
         type: "error",
@@ -237,7 +241,7 @@ function FlowBuilder() {
           </div>
           {/* contains updating teaxtarea and add node */}
           <Sidebar className="sidebar">
-            {isUpdating && selectedNode ? (
+            {selectedNode ? (
               <UpdateNode
                 selectedNode={selectedNode}
                 onUpdateMessage={(value) => handleUpdateNode(value)}

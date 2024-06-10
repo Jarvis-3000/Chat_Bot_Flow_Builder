@@ -9,13 +9,17 @@ function AddNode() {
   };
 
   return (
-    <div
-      className="add-message"
-      draggable
-      onDragStart={(event) => onDragStart(event, "custom")}
-    >
-      <img src={Add} alt="add node icon" draggable={false} />
-      <span draggable={false}>Message</span>
+    <div>
+      <p style={{fontWeight:600}}>Drag and Drop to add new message</p>
+      <div
+        className="add-message"
+        draggable
+        onDragStart={(event) => onDragStart(event, "custom")}
+        title="Drag and Drop to add new message"
+      >
+        <img src={Add} alt="add node icon" draggable={false} />
+        <span draggable={false}>Message</span>
+      </div>
     </div>
   );
 }

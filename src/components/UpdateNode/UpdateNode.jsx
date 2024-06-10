@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./UpdateNode.css";
 
 import ArrowBack from "../../assets/arrow-back.svg";
 
 const UpdateNode = ({ selectedNode, onBack, onUpdateMessage }) => {
   const [label, setLabel] = useState("");
+  const updatedLabel = useRef(null);
 
   useEffect(() => {
     setLabel(selectedNode.data.label);
@@ -13,7 +14,15 @@ const UpdateNode = ({ selectedNode, onBack, onUpdateMessage }) => {
 
   const handleUpdate = (event) => {
     setLabel(event.target.value);
-    onUpdateMessage(event.target.value);
+
+    // Debouncing
+    if (updatedLabel?.current != null) {
+      clearTimeout(updatedLabel.current);
+    }
+
+    updatedLabel.current = setTimeout(() => {
+      onUpdateMessage(event.target.value);
+    }, 140);  // update the node text after 100 milliseconds
   };
 
   return (
