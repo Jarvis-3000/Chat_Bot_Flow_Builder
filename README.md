@@ -1,5 +1,5 @@
 # Introduction
-This is a Chat Bot Flow Builder and hiring assignment from BiteSpeed. Supports Drag and Drop feature to simply add new Message to flow. Create connections and save.
+This is a Chat Bot Flow Builder. Supports Drag and Drop feature to simply add new Message to flow. Create connections and save.
 
 # Technologies
 - React
